@@ -1,4 +1,0 @@
-jwt:
-  signer_key: ${PROD_API_KEY}
-  access_token_expiration: 7200 # seconds (2 hour)
-  refresh_token_expiration: 86400 # seconds (24 hours)
