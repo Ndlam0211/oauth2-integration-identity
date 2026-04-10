@@ -70,7 +70,7 @@ export default function Login() {
         >
           <CardContent>
             <Typography variant="h5" component="h1" gutterBottom>
-              Welcome to Devtetia
+              Welcome to OAuth2 Application
             </Typography>
             <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
               <TextField
