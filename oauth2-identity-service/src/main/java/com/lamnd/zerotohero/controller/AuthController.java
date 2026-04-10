@@ -19,6 +19,13 @@ import lombok.RequiredArgsConstructor;
 public class AuthController {
     private final AuthService authService;
 
+    @PostMapping("/outbound/authenticate")
+    public APIResponse<AuthResponse> outboundAuthenticate(@RequestParam("code") String code) {
+        AuthResponse authResponse = authService.outboundAuthenticate(code);
+
+        return APIResponse.<AuthResponse>builder().data(authResponse).build();
+    }
+
     @PostMapping("/login")
     public APIResponse<AuthResponse> login(@RequestBody AuthRequest authRequest) {
         AuthResponse authResponse = authService.authenticate(authRequest);

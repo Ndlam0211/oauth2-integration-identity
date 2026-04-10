@@ -1,6 +1,6 @@
 package com.lamnd.zerotohero.enums;
 
-public enum Role {
+public enum ERole {
     ADMIN,
     USER
 }

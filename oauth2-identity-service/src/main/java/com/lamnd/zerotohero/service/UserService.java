@@ -4,6 +4,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.lamnd.zerotohero.entity.Role;
+import com.lamnd.zerotohero.enums.ERole;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -15,7 +17,6 @@ import com.lamnd.zerotohero.dto.reponse.UserResponse;
 import com.lamnd.zerotohero.dto.request.UserCreationRequest;
 import com.lamnd.zerotohero.dto.request.UserUpdateRequest;
 import com.lamnd.zerotohero.entity.User;
-import com.lamnd.zerotohero.enums.Role;
 import com.lamnd.zerotohero.exception.ResourceExistedException;
 import com.lamnd.zerotohero.exception.ResourceNotFoundException;
 import com.lamnd.zerotohero.mapper.UserMapper;
@@ -42,8 +43,8 @@ public class UserService {
 
         User user = userMapper.toUser(request);
 
-        Set<com.lamnd.zerotohero.entity.Role> roles = new HashSet<>();
-        roleRepo.findById(Role.USER.name()).map((roles::add));
+        Set<Role> roles = new HashSet<>();
+        roleRepo.findById(ERole.USER.name()).map((roles::add));
         user.setRoles(roles);
 
         try {

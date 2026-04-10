@@ -6,9 +6,6 @@ server:
 
 # Spring config
 spring:
-  application:
-    name: zerotohero
-
   # load .env file
   config:
     import: optional:file:.env[.properties]
@@ -30,7 +27,14 @@ spring:
         format_sql: true
 
 jwt:
-  signer_key: ${API_KEY:8ce8cc5a0fa36e1238df68b2e02996777c9ae265975b262919a7bc6eb2fd957d}
+  signer_key: ${API_KEY}
   issuer: https://lamnd.com
   access_token_expiration: 3600 # seconds (1 hour)
   refresh_token_expiration: 86400 # seconds (24 hours)
+
+outbound:
+  identity:
+    client_id: ${CLIENT_ID}
+    client_secret: ${CLIENT_SECRET}
+    redirect_uri: "http://localhost:3000/authenticate"
+    grant_type: "authorization_code"
