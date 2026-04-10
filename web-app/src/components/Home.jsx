@@ -10,7 +10,7 @@ export default function Home() {
 
   const getUserDetails = async (accessToken) => {
     const response = await fetch(
-      `http://localhost:8080/identity/users/myInfo`,
+      `http://localhost:8080/identity/users/my-info`,
       {
         method: "GET",
         headers: {
@@ -22,6 +22,32 @@ export default function Home() {
     console.log(data);
     
     setUserDetails(data.data);
+  };
+
+  const addPassword = async (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.target);
+    const newPassword = formData.get("newPassword");
+
+    const accessToken = getToken();
+    const response = await fetch(
+      `http://localhost:8080/identity/users/create-password`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ password: newPassword })
+      }
+    );
+
+    if (response.ok) {
+      console.log("Password set successfully");
+      // Refresh user details or navigate to a different page
+    } else {
+      console.error("Failed to set password");
+    }
   };
 
   useEffect(() => {
@@ -65,7 +91,18 @@ export default function Home() {
             >
               <p>Welcome back, {userDetails.username}!</p>
               <h1 className="name">{userDetails.firstName} {userDetails.lastName}</h1>
-              <p className="email">{userDetails.email}</p>{" "}
+              <p className="email">{userDetails.email}</p>
+              {userDetails.noPassword && (
+                <Box sx={{ marginTop: 3, width: "100%" }}>
+                  <Typography variant="body2" sx={{ marginBottom: 2 }}>
+                    Please set a password for your account
+                  </Typography>
+                  <form>
+                    <input type="password" placeholder="New password" required />
+                    <button type="submit" onSubmit={addPassword}>Set Password</button>
+                  </form>
+                </Box>
+              )}
             </Box>
           </Card>
         </Box>

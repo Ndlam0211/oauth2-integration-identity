@@ -2,6 +2,7 @@ package com.lamnd.zerotohero.controller;
 
 import java.util.List;
 
+import com.lamnd.zerotohero.dto.request.PasswordCreationRequest;
 import jakarta.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -26,10 +27,14 @@ public class UserController {
     APIResponse<UserResponse> createUser(@RequestBody @Valid UserCreationRequest request) {
         UserResponse user = userService.createUser(request);
 
-        APIResponse<UserResponse> response =
-                APIResponse.<UserResponse>builder().data(user).build();
+        return APIResponse.<UserResponse>builder().data(user).build();
+    }
 
-        return response;
+    @PostMapping("/create-password")
+    APIResponse<Void> createPassword(@RequestBody @Valid PasswordCreationRequest request) {
+        userService.createPassword(request);
+
+        return APIResponse.<Void>builder().message("Password has been created successfully").build();
     }
 
     @GetMapping
@@ -47,7 +52,7 @@ public class UserController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping("/myInfo")
+    @GetMapping("/my-info")
     ResponseEntity<APIResponse<UserResponse>> getMyInfo() {
         UserResponse user = userService.getMyInfo();
 

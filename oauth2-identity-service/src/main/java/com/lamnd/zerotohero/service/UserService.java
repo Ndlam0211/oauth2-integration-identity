@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import com.lamnd.zerotohero.dto.request.PasswordCreationRequest;
 import com.lamnd.zerotohero.entity.Role;
 import com.lamnd.zerotohero.enums.ERole;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -56,6 +57,21 @@ public class UserService {
         return userMapper.toDTO(user);
     }
 
+    public void createPassword(PasswordCreationRequest request) {
+        var context = SecurityContextHolder.getContext();
+        String username = context.getAuthentication().getName();
+
+        User user = findUserByUsername(username);
+
+        if (user.getPassword() != null) {
+            throw new ResourceExistedException("User", "password", user.getPassword());
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+
+        userRepo.save(user);
+    }
+
     @PreAuthorize("hasRole('ADMIN')") // only admin is able to access
     public List<UserResponse> getAllUser() {
         return userMapper.toListDTO(userRepo.findAll());
@@ -74,7 +90,10 @@ public class UserService {
 
         User user = findUserByUsername(username);
 
-        return userMapper.toDTO(user);
+        var userResponse = userMapper.toDTO(user);
+        userResponse.setNoPassword(user.getPassword() == null);
+
+        return userResponse;
     }
 
     public UserResponse updateUserById(String userId, UserUpdateRequest request) {
