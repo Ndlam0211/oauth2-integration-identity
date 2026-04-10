@@ -1,0 +1,36 @@
+# Microservice
+server:
+  port: 8080
+  servlet:
+    context-path: /identity
+
+# Spring config
+spring:
+  application:
+    name: zerotohero
+
+  # load .env file
+  config:
+    import: optional:file:.env[.properties]
+
+  # Database
+  datasource:
+    url: ${DBMS_CONNECTION:jdbc:mysql://localhost:3306/identity_service}
+    username: ${DBMS_USERNAME:root}
+    password: ${DBMS_PASSWORD:root}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  # JPA
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+jwt:
+  signer_key: ${API_KEY:8ce8cc5a0fa36e1238df68b2e02996777c9ae265975b262919a7bc6eb2fd957d}
+  issuer: https://lamnd.com
+  access_token_expiration: 3600 # seconds (1 hour)
+  refresh_token_expiration: 86400 # seconds (24 hours)
