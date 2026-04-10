@@ -43,6 +43,7 @@ public class AuthService {
     private final OutboundUserClient outboundUserClient;
 
     public AuthResponse outboundAuthenticate(String code) {
+        // exchange token with google by authorization code
         var response = outboundIdentityClient.exchangeToken(
                 ExchangeTokenRequest.builder()
                         .code(code)
@@ -71,8 +72,11 @@ public class AuthService {
                             .build());
                 });
 
+        // generate jwt token for user
+        String token = jwtUtil.generateToken(user);
+
         return AuthResponse.builder()
-                .accessToken(response.getAccessToken())
+                .accessToken(token)
                 .build();
     }
 
