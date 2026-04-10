@@ -13,11 +13,12 @@ import { OAuthConfig } from "../configurations/configuration";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getToken } from "../services/localStorageService";
+import { setToken } from "../services/localStorageService";
 
 export default function Login() {
   const navigate = useNavigate();
 
-  const handleClick = () => {
+  const googleLogin = () => {
     const callbackUrl = OAuthConfig.redirectUri;
     const authUrl = OAuthConfig.authUri;
     const googleClientId = OAuthConfig.clientId;
@@ -44,9 +45,26 @@ export default function Login() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Handle form submission
-    console.log("Username:", username);
-    console.log("Password:", password);
+    const data = {
+      username: username,
+      password: password
+    }
+
+    fetch('http://localhost:8080/identity/auth/login',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    }).then(response => response.json())
+    .then(data => {
+      console.log(data);
+      setToken(data.data?.accessToken);
+      navigate("/");
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
   };
 
   return (
@@ -99,6 +117,7 @@ export default function Login() {
                 variant="contained"
                 color="primary"
                 size="large"
+                onClick={handleSubmit}
                 fullWidth
               >
                 Login
@@ -108,7 +127,7 @@ export default function Login() {
                 variant="contained"
                 color="secondary"
                 size="large"
-                onClick={handleClick}
+                onClick={googleLogin}
                 fullWidth
                 sx={{ gap: "10px" }}
               >

@@ -44,7 +44,7 @@ public class UserService {
         User user = userMapper.toUser(request);
 
         Set<Role> roles = new HashSet<>();
-        roleRepo.findById(ERole.USER.name()).map((roles::add));
+        roles.add(Role.builder().name(ERole.USER.name()).build()); // assign default role to user
         user.setRoles(roles);
 
         try {

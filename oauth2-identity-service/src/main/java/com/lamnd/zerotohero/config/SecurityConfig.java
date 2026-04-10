@@ -13,6 +13,7 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtAut
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
@@ -44,7 +45,9 @@ public class SecurityConfig {
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer
                                 .decoder(customJwtDecoder)
                                 .jwtAuthenticationConverter(jwtAuthenticationConverter()))
-                        .authenticationEntryPoint(new JWTAuthenticationEndpoint()));
+                                .authenticationEntryPoint(new JWTAuthenticationEndpoint()))
+
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()));
         // k luu session, cookie tren client
         //                .sessionManagement(management ->
         // management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -52,17 +55,17 @@ public class SecurityConfig {
     }
 
     @Bean
-    public CorsFilter corsFilter() {
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(true); // cho phép gửi cookie
         config.addAllowedOrigin("http://localhost:3000"); // cho phép domain localhost:3000 truy cập
         config.addAllowedHeader("*"); // cho phép tất cả các header
         config.addAllowedMethod("*"); // cho phép tất cả các phương thức HTTP (GET, POST, PUT, DELETE, v.v.)
+        config.setAllowCredentials(true); // cho phép gửi cookie
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
 
-        return new CorsFilter(source);
+        return source;
     }
 
     @Bean

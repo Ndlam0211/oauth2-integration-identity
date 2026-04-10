@@ -10,11 +10,18 @@ export default function Home() {
 
   const getUserDetails = async (accessToken) => {
     const response = await fetch(
-      `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${accessToken}`
+      `http://localhost:8080/identity/users/myInfo`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
     );
     const data = await response.json();
+    console.log(data);
     
-    setUserDetails(data);
+    setUserDetails(data.data);
   };
 
   useEffect(() => {
@@ -56,13 +63,8 @@ export default function Home() {
                 width: "100%", // Ensure content takes full width
               }}
             >
-              <img
-                src={userDetails.picture}
-                alt={`${userDetails.given_name}'s profile`}
-                className="profile-pic"
-              />
-              <p>Welcome back,</p>
-              <h1 className="name">{userDetails.name}</h1>
+              <p>Welcome back, {userDetails.username}!</p>
+              <h1 className="name">{userDetails.firstName} {userDetails.lastName}</h1>
               <p className="email">{userDetails.email}</p>{" "}
             </Box>
           </Card>
